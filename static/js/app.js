@@ -72,7 +72,7 @@ class FileUpload {
                 return xhr;
             },
 
-            url: '/fileUploader/',
+            url: '/file_uploader/',
             type: 'POST',
             dataType: 'json',
             cache: false,

@@ -3,7 +3,35 @@ from django.http import JsonResponse
 import os
 from .models import File
 
-def index(request):
+def file_uploader(request):
+    if request.method == 'POST':  
+        file = request.FILES['file'].read()
+        filename= request.POST['filename']
+        existing_path = request.POST['existingPath']
+        end = request.POST['end']
+        nextSlice = request.POST['nextSlice']
+        
+        if file=="" or filename=="" or existing_path=="" or end=="" or nextSlice=="":
+            return JsonResponse({'data':'Invalid Request'})
+        else:
+            if existing_path == 'null':
+                new_path = 'media/' + filename
+                with open(new_path, 'wb+') as destination: 
+                    destination.write(file)
+                if int(end):
+                    return JsonResponse({'data':'Uploaded Successfully','existingPath': new_path})
+                return JsonResponse({'existingPath': new_path})
+            else:
+                with open(existing_path, 'ab+') as destination: 
+                    destination.write(file)
+                if int(end):
+                    return JsonResponse({'data':'Uploaded Successfully','existingPath':existing_path})
+                return JsonResponse({'existingPath':existing_path})    
+    return render(request, 'upload.html')
+
+
+
+def index2(request):
     if request.method == 'POST':  
         file = request.FILES['file'].read()
         fileName= request.POST['filename']
