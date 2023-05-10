@@ -19,12 +19,13 @@ def index(request):
                 path = 'media/' + fileName
                 with open(path, 'wb+') as destination: 
                     destination.write(file)
-                FileFolder = File()
-                FileFolder.existingPath = fileName
-                FileFolder.eof = end
-                FileFolder.name = fileName
-                FileFolder.save()
+                file_obj = File()
+                file_obj.existingPath = fileName
+                file_obj.eof = end
+                file_obj.name = fileName
+                file_obj.save()
                 if int(end):
+                    file_obj.delete()
                     res = JsonResponse({'data':'Uploaded Successfully','existingPath': fileName})
                 else:
                     res = JsonResponse({'existingPath': fileName})
@@ -32,17 +33,18 @@ def index(request):
 
             else:
                 path = 'media/' + existingPath
-                model_id = File.objects.get(existingPath=existingPath)
-                if model_id.name == fileName:
-                    if not model_id.eof:
+                file_object = File.objects.get(existingPath=existingPath)
+                if file_object.name == fileName:
+                    if not file_object.eof:
                         with open(path, 'ab+') as destination: 
                             destination.write(file)
                         if int(end):
-                            model_id.eof = int(end)
-                            model_id.save()
-                            res = JsonResponse({'data':'Uploaded Successfully','existingPath':model_id.existingPath})
+                            file_object.eof = int(end)
+                            file_object.save()
+                            file_object.delete()
+                            res = JsonResponse({'data':'Uploaded Successfully','existingPath':file_object.existingPath})
                         else:
-                            res = JsonResponse({'existingPath':model_id.existingPath})    
+                            res = JsonResponse({'existingPath':file_object.existingPath})    
                         return res
                     else:
                         res = JsonResponse({'data':'EOF found. Invalid request'})

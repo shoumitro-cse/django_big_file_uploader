@@ -31,10 +31,9 @@ class FileUpload {
     }
 
     //upload file
-    upload_file(start, model_id) {
+    upload_file(start, existingPath) {
         var end;
         var self = this;
-        var existingPath = model_id;
         var formData = new FormData();
         var nextChunk = start + this.max_length + 1;
         var currentChunk = this.file.slice(start, nextChunk);
