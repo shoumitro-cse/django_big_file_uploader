@@ -31,24 +31,24 @@ class FileUpload {
     }
 
     //upload file
-    upload_file(start, existingPath) {
-        var end;
+    upload_file(start, existing_path) {
+        var is_end;
         var self = this;
         var formData = new FormData();
         var nextChunk = start + this.max_length + 1;
         var currentChunk = this.file.slice(start, nextChunk);
         var uploadedChunk = start + currentChunk.size
         if (uploadedChunk >= this.file.size) {
-            end = 1;
+            is_end = true;
         } else {
-            end = 0;
+            is_end = false;
         }
         formData.append('file', currentChunk)
         formData.append('filename', this.file.name)
         $('.filename').text(this.file.name)
         $('.textbox').text("Uploading file")
-        formData.append('end', end)
-        formData.append('existingPath', existingPath);
+        formData.append('is_end', is_end)
+        formData.append('existing_path', existing_path);
         formData.append('nextSlice', nextChunk);
         $.ajaxSetup({
             headers: {
@@ -85,8 +85,7 @@ class FileUpload {
             success: function (res) {
                 if (nextChunk < self.file.size) {
                     // upload file in chunks
-                    existingPath = res.existingPath
-                    self.upload_file(nextChunk, existingPath);
+                    self.upload_file(nextChunk, res.existing_path);
                 } else {
                     // upload complete
                     $('.textbox').text(res.data);

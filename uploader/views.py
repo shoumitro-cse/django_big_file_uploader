@@ -7,26 +7,26 @@ def file_uploader(request):
     if request.method == 'POST':  
         file = request.FILES['file'].read()
         filename= request.POST['filename']
-        existing_path = request.POST['existingPath']
-        end = request.POST['end']
+        existing_path = request.POST['existing_path']
+        is_end = request.POST['is_end']
         nextSlice = request.POST['nextSlice']
         
-        if file=="" or filename=="" or existing_path=="" or end=="" or nextSlice=="":
+        if file=="" or filename=="" or existing_path=="" or is_end=="" or nextSlice=="":
             return JsonResponse({'data':'Invalid Request'})
         else:
             if existing_path == 'null':
                 new_path = 'media/' + filename
                 with open(new_path, 'wb+') as destination: 
                     destination.write(file)
-                if int(end):
-                    return JsonResponse({'data':'Uploaded Successfully','existingPath': new_path})
-                return JsonResponse({'existingPath': new_path})
+                if is_end:
+                    return JsonResponse({'data':'Uploaded Successfully','existing_path': new_path})
+                return JsonResponse({'existing_path': new_path})
             else:
                 with open(existing_path, 'ab+') as destination: 
                     destination.write(file)
-                if int(end):
-                    return JsonResponse({'data':'Uploaded Successfully','existingPath':existing_path})
-                return JsonResponse({'existingPath':existing_path})    
+                if is_end:
+                    return JsonResponse({'data':'Uploaded Successfully','existing_path':existing_path})
+                return JsonResponse({'existing_path':existing_path})    
     return render(request, 'upload.html')
 
 
