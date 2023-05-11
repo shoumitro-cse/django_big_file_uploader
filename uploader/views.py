@@ -1,32 +1,38 @@
 from django.shortcuts import render
-from django.http import JsonResponse
 import os
 from .models import File
+from rest_framework import generics
+from rest_framework.response import Response
 
-def file_uploader(request):
-    if request.method == 'POST':  
+
+class FileUploaderAPIView(generics.CreateAPIView):
+    def post(self, request, *args, **kwargs):
         file = request.FILES['file'].read()
-        filename= request.POST['filename']
+        filename = request.POST['filename']
         existing_path = request.POST['existing_path']
         is_end = request.POST['is_end']
-        nextSlice = request.POST['nextSlice']
-        
-        if file=="" or filename=="" or existing_path=="" or is_end=="" or nextSlice=="":
-            return JsonResponse({'data':'Invalid Request'})
+        next_slice = request.POST['nextSlice']
+
+        if file == "" or filename == "" or existing_path == "" or is_end == "" or next_slice == "":
+            return Response({'data': 'Invalid Request'})
         else:
             if existing_path == 'null':
                 new_path = 'media/' + filename
-                with open(new_path, 'wb+') as destination: 
+                with open(new_path, 'wb+') as destination:
                     destination.write(file)
+
                 if is_end:
-                    return JsonResponse({'data':'Uploaded Successfully','existing_path': new_path})
-                return JsonResponse({'existing_path': new_path})
+                    return Response({'data': 'Uploaded Successfully', 'existing_path': new_path})
+                return Response({'existing_path': new_path})
             else:
-                with open(existing_path, 'ab+') as destination: 
+                with open(existing_path, 'ab+') as destination:
                     destination.write(file)
                 if is_end:
-                    return JsonResponse({'data':'Uploaded Successfully','existing_path':existing_path})
-                return JsonResponse({'existing_path':existing_path})    
+                    return Response({'data': 'Uploaded Successfully', 'existing_path': existing_path})
+                return Response({'existing_path': existing_path})
+
+
+def home(request):
     return render(request, 'upload.html')
 
 
@@ -40,7 +46,7 @@ def index2(request):
         nextSlice = request.POST['nextSlice']
         
         if file=="" or fileName=="" or existingPath=="" or end=="" or nextSlice=="":
-            res = JsonResponse({'data':'Invalid Request'})
+            res = Response({'data':'Invalid Request'})
             return res
         else:
             if existingPath == 'null':
@@ -54,9 +60,9 @@ def index2(request):
                 file_obj.save()
                 if int(end):
                     file_obj.delete()
-                    res = JsonResponse({'data':'Uploaded Successfully','existingPath': fileName})
+                    res = Response({'data':'Uploaded Successfully','existingPath': fileName})
                 else:
-                    res = JsonResponse({'existingPath': fileName})
+                    res = Response({'existingPath': fileName})
                 return res
 
             else:
@@ -70,14 +76,14 @@ def index2(request):
                             file_object.eof = int(end)
                             file_object.save()
                             file_object.delete()
-                            res = JsonResponse({'data':'Uploaded Successfully','existingPath':file_object.existingPath})
+                            res = Response({'data':'Uploaded Successfully','existingPath':file_object.existingPath})
                         else:
-                            res = JsonResponse({'existingPath':file_object.existingPath})    
+                            res = Response({'existingPath':file_object.existingPath})    
                         return res
                     else:
-                        res = JsonResponse({'data':'EOF found. Invalid request'})
+                        res = Response({'data':'EOF found. Invalid request'})
                         return res
                 else:
-                    res = JsonResponse({'data':'No such file exists in the existingPath'})
+                    res = Response({'data':'No such file exists in the existingPath'})
                     return res
     return render(request, 'upload.html')

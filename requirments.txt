@@ -1,1 +1,7 @@
-Django==4.2.1
+Django
+djangorestframework-simplejwt
+djangorestframework
+drf-spectacular
+drf-spectacular-sidecar
+gunicorn
+
