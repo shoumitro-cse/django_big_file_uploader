@@ -20,6 +20,7 @@ class FileUploaderAPIView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         storage_path = request.POST['storage_path']
+        is_end = bool(int(request.POST['is_end']))
         if storage_path == 'null':
             storage_path = self.get_storage_location(request.POST['filename'])
             with open(storage_path, 'wb+') as destination:
@@ -27,6 +28,8 @@ class FileUploaderAPIView(generics.CreateAPIView):
         else:
             with open(storage_path, 'ab+') as destination:
                 destination.write(request.FILES['file'].read())
+        if is_end:
+            return Response({'data': 'Uploaded Successfully'})
         return Response({'storage_path': storage_path})
 
 

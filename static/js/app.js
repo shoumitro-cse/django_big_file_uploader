@@ -33,12 +33,17 @@ class FileUpload {
     //upload file
     upload_file(start, storage_path) {
         let self = this;
+        let is_end = 0
         let formData = new FormData();
         let nextChunk = start + this.max_length + 1;
         let currentChunk = this.file.slice(start, nextChunk);
         let uploadedChunk = start + currentChunk.size
+        if (parseInt(uploadedChunk) >= parseInt(this.file.size)) {
+            is_end = 1
+        }
         formData.append('file', currentChunk)
         formData.append('filename', this.file.name)
+        formData.append('is_end', is_end)
         $('.filename').text(this.file.name)
         $('.textbox').text("Uploading file")
         formData.append('storage_path', storage_path);
@@ -80,7 +85,7 @@ class FileUpload {
                     self.upload_file(nextChunk, res.storage_path);
                 } else {
                     // upload complete
-                    $('.textbox').text('Uploaded Successfully');
+                    $('.textbox').text(res.data);
                     // alert(res.data)
                 }
             }
