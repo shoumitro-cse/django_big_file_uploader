@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import os
+from django.conf import settings
 from .models import File
 from rest_framework import generics, status
 from rest_framework.response import Response
@@ -9,6 +10,12 @@ from .serializers import UploaderSerializer
 class FileUploaderAPIView(generics.CreateAPIView):
     serializer_class = UploaderSerializer
 
+    @staticmethod
+    def get_storage_location(filename):
+        if not os.path.isdir(settings.MEDIA_ROOT):
+            os.mkdir(settings.MEDIA_ROOT)
+        return os.path.join(settings.MEDIA_ROOT, filename)
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -16,7 +23,7 @@ class FileUploaderAPIView(generics.CreateAPIView):
         is_end = request.POST['is_end']
         binary_file = request.FILES['file'].read()
         if existing_path == 'null':
-            file_storage_loc = 'media/' + request.POST['filename']
+            file_storage_loc = self.get_storage_location(request.POST['filename'])
             with open(file_storage_loc, 'wb+') as destination:
                 destination.write(binary_file)
             if is_end:
