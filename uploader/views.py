@@ -1,7 +1,7 @@
 from django.shortcuts import render
 import os
 from .models import File
-from rest_framework import generics
+from rest_framework import generics,status
 from rest_framework.response import Response
 
 
@@ -11,10 +11,10 @@ class FileUploaderAPIView(generics.CreateAPIView):
         filename = request.POST['filename']
         existing_path = request.POST['existing_path']
         is_end = request.POST['is_end']
-        next_slice = request.POST['nextSlice']
+        next_slice = request.POST['next_slice']
 
         if file == "" or filename == "" or existing_path == "" or is_end == "" or next_slice == "":
-            return Response({'data': 'Invalid Request'})
+            return Response({'data': 'Invalid Request'}, status.HTTP_400_BAD_REQUEST)
         else:
             if existing_path == 'null':
                 new_path = 'media/' + filename

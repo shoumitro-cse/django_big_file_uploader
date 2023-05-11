@@ -49,7 +49,7 @@ class FileUpload {
         $('.textbox').text("Uploading file")
         formData.append('is_end', is_end)
         formData.append('existing_path', existing_path);
-        formData.append('nextSlice', nextChunk);
+        formData.append('next_slice', nextChunk);
         $.ajaxSetup({
             headers: {
                 "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
