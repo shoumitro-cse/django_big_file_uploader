@@ -31,25 +31,17 @@ class FileUpload {
     }
 
     //upload file
-    upload_file(start, existing_path) {
-        var is_end;
-        var self = this;
-        var formData = new FormData();
-        var nextChunk = start + this.max_length + 1;
-        var currentChunk = this.file.slice(start, nextChunk);
-        var uploadedChunk = start + currentChunk.size
-        if (uploadedChunk >= this.file.size) {
-            is_end = true;
-        } else {
-            is_end = false;
-        }
+    upload_file(start, storage_path) {
+        let self = this;
+        let formData = new FormData();
+        let nextChunk = start + this.max_length + 1;
+        let currentChunk = this.file.slice(start, nextChunk);
+        let uploadedChunk = start + currentChunk.size
         formData.append('file', currentChunk)
         formData.append('filename', this.file.name)
         $('.filename').text(this.file.name)
         $('.textbox').text("Uploading file")
-        formData.append('is_end', is_end)
-        formData.append('existing_path', existing_path);
-        formData.append('next_slice', nextChunk);
+        formData.append('storage_path', storage_path);
         $.ajaxSetup({
             headers: {
                 "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
@@ -85,10 +77,10 @@ class FileUpload {
             success: function (res) {
                 if (nextChunk < self.file.size) {
                     // upload file in chunks
-                    self.upload_file(nextChunk, res.existing_path);
+                    self.upload_file(nextChunk, res.storage_path);
                 } else {
                     // upload complete
-                    $('.textbox').text(res.data);
+                    $('.textbox').text('Uploaded Successfully');
                     // alert(res.data)
                 }
             }
