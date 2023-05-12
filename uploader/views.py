@@ -37,7 +37,7 @@ def home(request):
     return render(request, 'upload.html')
 
 
-
+"""
 def index2(request):
     if request.method == 'POST':  
         file = request.FILES['file'].read()
@@ -88,3 +88,4 @@ def index2(request):
                     res = Response({'data':'No such file exists in the existingPath'})
                     return res
     return render(request, 'upload.html')
+"""
