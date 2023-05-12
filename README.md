@@ -1,9 +1,14 @@
-# AJAX-File-Uploader
-[Here](https://dev.to/shubhamkshatriya25/ajax-file-upload-in-chunks-using-django-with-a-progress-bar-4nhi) is the link of the blog for this project, incase you want a code walk through.
-
-### Install django in your local machine if not installed.
+### Installation & Run
 ```
-pip install django
+
+# Python version 3.10.10
+git clone https://github.com/shoumitro-cse/django_big_file_uploader.git
+cd django_big_file_uploader
+cp env.example .env
+python -m venv venv
+source ./venv/bin/activate
+pip install -r requirments.txt
+python manage.py runserver
 ```
 
 ### Run the project.
@@ -12,6 +17,5 @@ python manage.py runserver
 ```
 
 ### Below is the glimpse of the web app.
-![image 1](/images/image1.png)
-![image 2](/images/image2.png)
-![image 3](/images/image3.png)
+![screenshot 1](/screenshots/screenshot_1.png)
+![screenshot 2](/screenshots/screenshot_2.png)
